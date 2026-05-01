@@ -7,6 +7,15 @@ import constructorReducer, {
 } from './constructorSlice';
 import { TIngredient } from '@utils-types';
 
+// Мокаем crypto.randomUUID
+beforeAll(() => {
+  Object.defineProperty(global, 'crypto', {
+    value: {
+      randomUUID: () => 'test-uuid-123'
+    }
+  });
+});
+
 const mockBun: TIngredient = {
   _id: '1',
   name: 'Булка',
@@ -50,34 +59,34 @@ const mockIngredient2: TIngredient = {
 };
 
 describe('constructorSlice', () => {
+  const initialState = { bun: null, ingredients: [] };
+
   it('должен вернуть начальное состояние', () => {
-    expect(constructorReducer(undefined, { type: 'unknown' })).toEqual({
-      bun: null,
-      ingredients: []
-    });
+    expect(constructorReducer(undefined, { type: 'unknown' })).toEqual(initialState);
   });
 
   it('должен добавить булку', () => {
     const action = addIngredient(mockBun);
-    const state = constructorReducer(undefined, action);
-    expect(state.bun).toEqual({ ...mockBun, id: expect.any(String) });
+    const state = constructorReducer(initialState, action);
+    expect(state.bun).toEqual({ ...mockBun, id: 'test-uuid-123' });
   });
 
   it('должен добавить начинку', () => {
     const action = addIngredient(mockIngredient1);
-    const state = constructorReducer(undefined, action);
+    const state = constructorReducer(initialState, action);
     expect(state.ingredients).toHaveLength(1);
+    expect(state.ingredients[0]).toEqual({ ...mockIngredient1, id: 'test-uuid-123' });
   });
 
   it('должен удалить ингредиент', () => {
-    let state = constructorReducer(undefined, addIngredient(mockIngredient1));
+    let state = constructorReducer(initialState, addIngredient(mockIngredient1));
     const id = state.ingredients[0].id;
     state = constructorReducer(state, removeIngredient(id));
     expect(state.ingredients).toHaveLength(0);
   });
 
   it('должен переместить ингредиент вверх', () => {
-    let state = constructorReducer(undefined, addIngredient(mockIngredient1));
+    let state = constructorReducer(initialState, addIngredient(mockIngredient1));
     state = constructorReducer(state, addIngredient(mockIngredient2));
     const id1 = state.ingredients[0].id;
     const id2 = state.ingredients[1].id;
@@ -88,7 +97,7 @@ describe('constructorSlice', () => {
   });
 
   it('должен переместить ингредиент вниз', () => {
-    let state = constructorReducer(undefined, addIngredient(mockIngredient1));
+    let state = constructorReducer(initialState, addIngredient(mockIngredient1));
     state = constructorReducer(state, addIngredient(mockIngredient2));
     const id1 = state.ingredients[0].id;
     const id2 = state.ingredients[1].id;
@@ -99,7 +108,7 @@ describe('constructorSlice', () => {
   });
 
   it('должен очистить конструктор', () => {
-    let state = constructorReducer(undefined, addIngredient(mockBun));
+    let state = constructorReducer(initialState, addIngredient(mockBun));
     state = constructorReducer(state, addIngredient(mockIngredient1));
     state = constructorReducer(state, clearConstructor());
     expect(state.bun).toBeNull();
