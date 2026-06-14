@@ -4,7 +4,10 @@ import { useParams } from 'react-router-dom';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
-import { fetchOrderByNumber, clearOrderInfo } from '../../services/slices/orderInfoSlice';
+import {
+  fetchOrderByNumber,
+  clearOrderInfo
+} from '../../services/slices/orderInfoSlice';
 
 export const OrderInfo: FC = () => {
   const { number } = useParams<{ number: string }>();

@@ -18,7 +18,9 @@ export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
 
     const handleClick = () => {
       dispatch(setIngredient(ingredient));
-      navigate(`/ingredients/${ingredient._id}`, { state: { background: location } });
+      navigate(`/ingredients/${ingredient._id}`, {
+        state: { background: location }
+      });
     };
 
     return (

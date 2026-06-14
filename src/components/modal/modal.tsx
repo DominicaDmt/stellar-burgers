@@ -13,7 +13,7 @@ export const Modal: FC<TModalProps> = memo(({ title, onClose, children }) => {
     if (isClosing.current) return;
     isClosing.current = true;
     onClose();
-    
+
     // Сбрасываем флаг через таймаут
     setTimeout(() => {
       isClosing.current = false;

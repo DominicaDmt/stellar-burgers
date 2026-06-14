@@ -1,6 +1,14 @@
 import ingredientsReducer, { fetchIngredients } from './ingredientsSlice';
 
 describe('ingredientsSlice', () => {
+  it('должен вернуть начальное состояние при неизвестном экшене', () => {
+    expect(ingredientsReducer(undefined, { type: 'UNKNOWN_ACTION' })).toEqual({
+      data: [],
+      loading: false,
+      error: null
+    });
+  });
+
   it('должен вернуть начальное состояние', () => {
     expect(ingredientsReducer(undefined, { type: 'unknown' })).toEqual({
       data: [],
@@ -10,7 +18,9 @@ describe('ingredientsSlice', () => {
   });
 
   it('должен обработать pending', () => {
-    const state = ingredientsReducer(undefined, { type: fetchIngredients.pending.type });
+    const state = ingredientsReducer(undefined, {
+      type: fetchIngredients.pending.type
+    });
     expect(state.loading).toBe(true);
     expect(state.error).toBeNull();
   });

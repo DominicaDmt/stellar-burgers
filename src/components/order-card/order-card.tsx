@@ -46,7 +46,9 @@ export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
 
   const handleClick = () => {
     if (location.pathname.includes('/profile')) {
-      navigate(`/profile/orders/${order.number}`, { state: { background: location } });
+      navigate(`/profile/orders/${order.number}`, {
+        state: { background: location }
+      });
     } else {
       navigate(`/feed/${order.number}`, { state: { background: location } });
     }

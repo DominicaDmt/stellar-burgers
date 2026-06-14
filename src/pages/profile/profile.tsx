@@ -42,19 +42,21 @@ export const Profile: FC = () => {
     e.preventDefault();
     const updatedData: { name?: string; email?: string; password?: string } =
       {};
-    if (formValue.name !== initialValues.name) updatedData.name = formValue.name;
-    if (formValue.email !== initialValues.email) updatedData.email = formValue.email;
+    if (formValue.name !== initialValues.name)
+      updatedData.name = formValue.name;
+    if (formValue.email !== initialValues.email)
+      updatedData.email = formValue.email;
     if (formValue.password) updatedData.password = formValue.password;
-    
+
     dispatch(updateUser(updatedData));
-    
+
     // После отправки обновляем исходные значения
     setInitialValues({
       name: formValue.name,
       email: formValue.email,
       password: ''
     });
-    setFormValue(prev => ({ ...prev, password: '' }));
+    setFormValue((prev) => ({ ...prev, password: '' }));
   };
 
   const handleCancel = (e: SyntheticEvent) => {
