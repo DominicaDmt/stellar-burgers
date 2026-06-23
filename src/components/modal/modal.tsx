@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useRef } from 'react';
+import { FC, memo, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 
 import { TModalProps } from './type';
@@ -7,18 +7,9 @@ import { ModalUI } from '@ui';
 const modalRoot = document.getElementById('modals');
 
 export const Modal: FC<TModalProps> = memo(({ title, onClose, children }) => {
-  const isClosing = useRef(false);
-
-  const handleClose = () => {
-    if (isClosing.current) return;
-    isClosing.current = true;
+  const handleClose = useCallback(() => {
     onClose();
-
-    // Сбрасываем флаг через таймаут
-    setTimeout(() => {
-      isClosing.current = false;
-    }, 300);
-  };
+  }, [onClose]);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -31,7 +22,7 @@ export const Modal: FC<TModalProps> = memo(({ title, onClose, children }) => {
     return () => {
       document.removeEventListener('keydown', handleEsc);
     };
-  }, []);
+  }, [handleClose]);
 
   return ReactDOM.createPortal(
     <ModalUI title={title} onClose={handleClose}>

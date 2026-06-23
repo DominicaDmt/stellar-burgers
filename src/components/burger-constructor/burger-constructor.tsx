@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
 import { useNavigate } from 'react-router-dom';
 import { TConstructorIngredient } from '@utils-types';
@@ -12,6 +12,14 @@ export const BurgerConstructor: FC = () => {
   const constructorItems = useSelector((state) => state.burgerConstructor);
   const { user } = useSelector((state) => state.user);
   const { orderRequest, orderData } = useSelector((state) => state.order);
+  
+  // Сохраняем orderData в ref, чтобы использовать при закрытии
+  const orderDataRef = useRef(orderData);
+
+  // Обновляем ref при изменении orderData
+  if (orderData) {
+    orderDataRef.current = orderData;
+  }
 
   const onOrderClick = () => {
     if (!user) {
@@ -35,10 +43,15 @@ export const BurgerConstructor: FC = () => {
   };
 
   const closeOrderModal = () => {
-    dispatch(clearOrder());
-    if (orderData) {
+    // Проверяем, был ли заказ успешно создан
+    if (orderDataRef.current) {
+      // Сначала очищаем конструктор
       dispatch(clearConstructor());
     }
+    // Затем очищаем заказ
+    dispatch(clearOrder());
+    // Сбрасываем ref
+    orderDataRef.current = null;
   };
 
   const price = useMemo(

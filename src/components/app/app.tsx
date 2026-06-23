@@ -1,3 +1,5 @@
+// src/components/app/app.tsx
+
 import {
   BrowserRouter,
   Routes,
@@ -24,13 +26,13 @@ import { useDispatch, useSelector } from '../../services/store';
 import { useEffect } from 'react';
 import { getUser } from '../../services/slices/userSlice';
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
+import { Preloader } from '@ui';
 
 const AppContent = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  const background =
-    location.state?.background || sessionStorage.getItem('background');
+  const background = location.state?.background || sessionStorage.getItem('background');
   const { isAuthChecked } = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -39,12 +41,13 @@ const AppContent = () => {
   }, [dispatch]);
 
   if (!isAuthChecked) {
-    return null;
+    return <Preloader />;
   }
 
   const handleModalClose = () => {
     sessionStorage.removeItem('background');
-    navigate(-1);
+    // Закрываем модалку через навигацию на главную
+    navigate('/', { replace: true });
   };
 
   return (
@@ -54,7 +57,6 @@ const AppContent = () => {
         <Route path='/feed' element={<Feed />} />
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
         <Route path='/feed/:number' element={<OrderInfo />} />
-        {/* ДОБАВЛЯЕМ ЭТОТ РОУТ ДЛЯ СТРАНИЦЫ ЗАКАЗА В ИСТОРИИ */}
         <Route
           path='/profile/orders/:number'
           element={
